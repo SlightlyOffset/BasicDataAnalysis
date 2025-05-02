@@ -1,6 +1,10 @@
 # BasicDataAnalysis
  Basic Data Analysis Script to calculate mean, median, and mode.
 
+## Update
+- Currently working on random data generation.
+- Working on file support
+
 # Basic Data Analysis Script Documentation
 
 ## Overview
