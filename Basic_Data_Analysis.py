@@ -107,7 +107,7 @@ def main():
         sorted_data = sorted(valid_data)
         procmean = st.mean(sorted_data)
         procmedian = st.median(sorted_data)
-        procmode = st.mode(sorted_data)
+        procmode = st.multimode(sorted_data)
         
         print(f"\nMean: {procmean}")
         print(f"Median: {procmedian}")
