@@ -21,8 +21,10 @@ This script performs basic data analysis on a given list of numbers, calculating
 - **Interactive Menu**: Provides a user-friendly interface.
 
 ## Requirements
-- Python 3.x
-- `statistics` module (automatically installed if missing)
+- Python 3.10 or newer
+- `statistics` module (standard library, automatically installed if missing)
+- `random` module (standard library, automatically installed if missing)
+- `random_data.py` module (custom, must exist witnin the same directory as `Basic_Data_Analysis.py`)
 
 ## Script Flow
 1. **Initialization**
