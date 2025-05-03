@@ -99,12 +99,9 @@ Follow the prompts to enter data and perform calculations.
 - Graphical representation of results (e.g., histograms).
 - Export results to a file (CSV or JSON).
 - Add unit tests or interactive learning prompts.
----
 
 ## Author
 - SlightlyOffset
-
----
 
 ## Version
 - 1.1 (3 May 2025)
