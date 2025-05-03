@@ -64,6 +64,14 @@ This script performs basic data analysis on a given list of numbers, calculating
 - Accepts one number at a time until the user types `done`.
 - Calls `analysis(data)` to process the input.
 
+### `ReadFile()`
+- Prompts for a `.txt` file containing space-separated numbers.
+- Reads and processes the content, passing it to `analysis(data)`.
+
+### `RandomGen()`
+- Allows the user to specify how many numbers to generate and the range.
+- Generates random floats and sends them to `analysis(data)`.
+
 ### `main_menu()`
 - Displays the main menu.
 - Allows users to choose between input modes or exit.
@@ -82,12 +90,13 @@ Follow the prompts to enter data and perform calculations.
 ## Notes
 - Invalid inputs (non-numeric entries) are ignored and displayed separately.
 - The script handles exceptions and provides interactive feedback.
+- File input must point to a valid `.txt` file with readable numeric data.
 
 ## Future Enhancements
 - Support for additional statistical measures (variance, standard deviation).
-- Option to read data from a file.
-- Graphical representation of results.
-
+- Graphical representation of results (e.g., histograms).
+- Export results to a file (CSV or JSON).
+- Add unit tests or interactive learning prompts.
 ---
 
 ## Author
