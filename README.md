@@ -2,8 +2,9 @@
  Basic Data Analysis Script to calculate mean, median, and mode.
 
 ## Update
-- Currently working on random data generation.
-- Working on file support
+- (3 May 2025 9:42PM) Successfully implemented both file support and random data generation.
+- (3 May 2025) Currently working on random data generation.
+- (3 May 2025) Working on file support
 
 # Basic Data Analysis Script Documentation
 
@@ -88,3 +89,11 @@ Follow the prompts to enter data and perform calculations.
 - Graphical representation of results.
 
 ---
+
+## Author
+- SlightlyOffset
+
+---
+
+## Version
+- 1.1 (3 May 2025)
