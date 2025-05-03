@@ -3,14 +3,15 @@ Basic Data Analysis Program
 ===========================
 
 This program performs basic statistical analysis on numeric data provided by the user,
-calculating the mean, median, and mode of the dataset.
+calculating the mean, median, and mode(single, multi) of the dataset.
 
 Features:
 ---------
 * Automatically checks for and installs required dependencies (statistics module)
-* Offers two different input methods:
+* Offers three different input methods:
     1. Whole list - Enter all numbers at once, comma-separated
     2. Single entry - Enter numbers one at a time
+    3. Read from file - Read data from a txt file.
 * Handles non-numeric inputs gracefully by filtering them out
 * Provides clear user prompts and error messages
 
@@ -21,6 +22,7 @@ Usage:
 3. Select an input mode from the main menu:
    - Option 1: Enter a comma-separated list of numbers
    - Option 2: Enter numbers one at a time, type 'done' when finished
+   - Option 3: Enter file path to open and read data from file.
 4. Review the calculated statistics (mean, median, mode)
 5. Type 'Exit' at the main menu to quit the program
 
@@ -31,11 +33,14 @@ Functions:
 - filter(raw): Separates valid numerical data from invalid entries
 - WholeList(): Handles the whole-list input mode
 - Single(): Handles the one-at-a-time input mode
+- ReadFile(): Handle txt file input.
+- RandomGen(): Use local script to randomly generate data.
 - main_menu(): Displays and manages the main program menu
 
 Dependencies:
 ------------
 - statistics: Python's built-in statistics module (installed automatically if needed)
+- random_data: Local modlule (must exist within same directory)
 
 Returns:
 --------
@@ -43,6 +48,7 @@ For valid numerical inputs, the program calculates and displays:
 - Mean (average)
 - Median (middle value)
 - Mode (most common value)
+- MultiMode (multiple common value)
 - List of any invalid entries that were filtered out
 
 Author:
@@ -51,11 +57,15 @@ SlightlyOffset
 
 Version:
 --------
-1.0
+1.1
+Update 3 May 2025
+- Add file support
+- Implement random data generation
 """
 
 import subprocess
 import sys
+import random_data as rdgen     # Local module
 
 def main():
     def install_and_import(package):
@@ -90,7 +100,6 @@ def main():
         Function to perform statistical processes.
         '''
         def filter(raw):
-            print("\nFilter called. (Debug)")
             
             valid_data = []
             invalid_data = [] 
@@ -105,17 +114,29 @@ def main():
         
         valid_data, invalid_data = filter(data)
         sorted_data = sorted(valid_data)
-        procmean = st.mean(sorted_data)
-        procmedian = st.median(sorted_data)
-        procmode = st.multimode(sorted_data)
         
-        print(f"\nMean: {procmean}")
-        print(f"Median: {procmedian}")
-        print(f"Mode: {procmode}")
-        print(f"Invalid data include: {invalid_data}")
+        if len(valid_data) == 0:
+            print("\nError: Can't operate on empty sequence.")
+            print("     - valid_data(list) is empty.")
+            
+        try:
+            procmean = st.mean(sorted_data)
+            procmedian = st.median(sorted_data)
+            procmode = st.mode(sorted_data)
+            procmultimode = st.multimode(sorted_data)
         
-        input("\nPress 'Enter' to return to menu...\n")
-        return
+            print("\n--- Result ---")
+            print(f"Mean: {procmean}")
+            print(f"Median: {procmedian}")
+            print(f"Mode(single): {procmode}")
+            print(f"Mode(multi): {procmultimode}")
+            print(f"Invalid data include: {invalid_data}")
+            
+        except Exception as e:
+            print(f"\nError: {e}")
+        
+        finally:
+            return
     
     def WholeList():
         '''
@@ -125,7 +146,7 @@ def main():
             or
             (1, 2, 3, 4,...,n)
         '''
-        print("\nWhole List.")
+        print("\n--- Whole List Mode ---")
         print("Ex input:")
         print("1, 2, 3, 4,...,n")
         print("or\n(1, 2 3, 4,...,n)")
@@ -145,13 +166,15 @@ def main():
                 break
 
         analysis(data)
+        input("\nPress 'Enter' to return to menu...\n")
+        print("\nReturn to menu...\n")
         return
 
     def Single():
         '''
         Function to allow user to enter each data one by one.
         '''
-        print("\nOne at a time.")
+        print("\n--- Single Input Mode ---")
         print("Put each element into the list one at a time.")
         print("Every non-numerical elements will not be included in the calculation.")
         
@@ -159,7 +182,8 @@ def main():
         
         while True:
             print(f"\nCurrent: {data}")
-            data_in = input("\nEnter here(single): ")
+            print("Type 'done' to finish and continue.")
+            data_in = input("Enter here(single): ")
             
             if data_in.lower().strip() == "done":
                 if len(data) < 1:
@@ -170,6 +194,88 @@ def main():
             data.append(data_in.strip())
                 
         analysis(data)
+        input("\nPress 'Enter' to return to menu...\n")
+        print("\nReturn to menu...\n")
+        return
+    
+    def ReadFile():
+        '''
+        A function to read data from a file.
+        '''
+        def OpenFile(namepath):
+            '''
+            Try to open the file with path given then hand over to analysis(function)
+            '''
+            print("\n>> Opening file...")
+            data_list = []
+            try:
+                with open(namepath, "r", encoding="utf8") as data:
+                    print(f"\n>> File opened: {namepath}")
+                    for line in data:
+                        try:
+                            number = float(line.strip())
+                            data_list.append(number)
+                        except ValueError:
+                            print(f"\nWarning: Skipping non-numeric line: '{line.strip()}'")
+            
+            except FileNotFoundError:
+                print("\nError: File not found.")
+            except PermissionError:
+                print("Error: Access denied.")
+            except OSError as e:
+                print(f"Error: An operating system error occurred while operating '{namepath}': {e}")
+            except UnicodeDecodeError:
+                print(f"Error: Unable to decode correctly. Provided file might not encoded in utf8.")
+                
+            finally:
+                analysis(data_list)
+                return
+                
+            
+        print("\n--- Read From File Mode ---")
+        print("Read data from provided file path(full path)\nor file name within the same directory.")
+        print("\nExample for file input:")
+        print("- Full path -")
+        print("  --> D:\\code\\BasicDataAnalysis\\Example.txt")
+        print("- File name -")
+        print("For file within the same directory only.")
+        print("  --> Example.txt")
+        
+        while True:
+            print("\nType 'format ex' for supported data format.")
+            print("Type 'exit' to stop and return to menu.")
+            namepath = input("Enter file(path/name): ").strip()
+            
+            if namepath.lower() == "exit":
+                print("\nExiting...")
+                break
+            
+            if namepath.lower() == "format ex":
+                print("\nAccepted format:")
+                print("- File extension must be .txt UTF8")
+                print("- All individual data must be separated with newline.")
+                print("    Ex:\n    452.28\n    330.22\n    449.27\n    306.87\n    228.87")
+            
+            if namepath.startswith('"') and namepath.endswith('"'):
+                namepath = namepath.replace('"', '')
+                if namepath.endswith(".txt"):
+                    OpenFile(namepath)
+                    break
+                else:
+                    print("\nError: Not a .txt extension. Try again.")
+            
+            if not namepath.endswith(".txt"):
+                print("\nError: Not a .txt extension. Try again.")
+            else:
+                OpenFile(namepath)
+                break
+            
+        input("\nPress 'Enter' to return to menu...\n")
+        print("\nReturn to menu...\n")
+        return
+    
+    def RandomGen():
+        rdgen.main()
         return
     
     def main_menu():
@@ -178,16 +284,19 @@ def main():
         '''
         input_mode = {
         "1" : WholeList,
-        "2" : Single
+        "2" : Single,
+        "3" : ReadFile,
+        "4" : RandomGen
         }
         
-        print("Basic Data Analysis")
-        print("Calculate the mean, median, and mode.\n")
-        
         while True:
+            print("--- Basic Data Analysis ---")
+            print("Calculate the mean, median, and mode.\n")
             print("What input mode do you want to use?")
             print("1. Whole list.")
             print("2. One at a time.")
+            print("3. Read from file.")
+            print("4. Randomly generate data (extra)")
             print("Type 'Exit' to exit.")
             
             mode = input("\nEnter here(menu): ")
@@ -199,12 +308,12 @@ def main():
             if mode in input_mode:
                 input_mode[mode]()
             else:
-                print("\nError: Invalid menu option. Please enter 1, 2, or 'Exit'.\n")
+                print("\nError: Invalid menu option. Please enter 1 to 4 or 'Exit'.\n")
         
     '''
     Initialization phrase of the program to install necessary dependencies.
     '''
-    print("Initialization...")
+    print("--- Initialization... ---")
     requirements = ["statistics"]
     all_installed = True
     for req in requirements:
