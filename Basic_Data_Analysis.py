@@ -40,7 +40,8 @@ Functions:
 Dependencies:
 ------------
 - statistics: Python's built-in statistics module (installed automatically if needed)
-- random_data: Local modlule (must exist within same directory)
+- random: Python's built-in random module (installed automatically if needed)
+- random_data.py: Local modlule (must exist within same directory)
 
 Returns:
 --------
@@ -65,7 +66,7 @@ Update 3 May 2025
 
 import subprocess
 import sys
-import random_data as rdgen     # Local module
+import random_data as rdgen
 
 def main():
     def install_and_import(package):
@@ -314,7 +315,7 @@ def main():
     Initialization phrase of the program to install necessary dependencies.
     '''
     print("--- Initialization... ---")
-    requirements = ["statistics"]
+    requirements = ["statistics", "random"]
     all_installed = True
     for req in requirements:
         if not install_and_import(req):
