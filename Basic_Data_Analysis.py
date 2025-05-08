@@ -58,15 +58,16 @@ SlightlyOffset
 
 Version:
 --------
-1.1
-Update 3 May 2025
-- Add file support
-- Implement random data generation
+1.2
+Updated 8 May 2025
+- Add more error handling.
+    - Handling case where random_data.py does not exist.
+- Initialization now have its own function and being called first.
+    - More text on screen! (Status display for modules)
 """
 
 import subprocess
 import sys
-import random_data as rdgen
 
 def main():
     def install_and_import(package):
@@ -75,26 +76,35 @@ def main():
         """
         try:
             __import__(package)
-            print(f"\n{package} is already installed.\n")
+            print(f"\n{package} is already installed or existed.\n")
             return True #indicate successful import
+            
         except ImportError:
-            print(f"\n{package} is not installed. Installing...")
-            authorization = input(f"\nAuthorize istallation of {package}? (y/N):  ")
-            if authorization.strip().lower() == "y":
-                try:
-                    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-                    print(f"\n{package} installed successfully.")
-                    __import__(package) #try import again after install
-                    return True #indicate successful import after install
-                except subprocess.CalledProcessError as e:
-                    print(f"\nError installing {package}: {e}")
-                    return False #Indicate install failure
-                    
-            elif authorization.strip().lower() == "n" or authorization.strip().lower() == "":
-                print("\nAborted...\n")
-                print(f"Note: The program might not work if the package {package} is not installed.")
-                input("Press 'Enter' to continue...")
-                return False # Package not installed.    
+            if package == "random_data":
+                print(f"\nWARNING: Module [{package}] is missing.")
+                print(f"Make sure {package} is within the same directory.")
+                print("or the program migth not work correctly.")
+                print(f"You can download {package} from GitHub page [https://github.com/SlightlyOffset/BasicDataAnalysis]")
+                return False    # random_data.py is missing
+                
+            else:    
+                print(f"\n{package} is not installed. Installing...")
+                authorization = input(f"\nAuthorize istallation of {package}? (y/N):  ")
+                if authorization.strip().lower() == "y":
+                    try:
+                        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+                        print(f"\n{package} installed successfully.")
+                        __import__(package) #try import again after install
+                        return True #indicate successful import after install
+                    except subprocess.CalledProcessError as e:
+                        print(f"\nError installing {package}: {e}")
+                        return False #Indicate install failure
+                        
+                elif authorization.strip().lower() == "n" or authorization.strip().lower() == "":
+                    print("\nAborted...\n")
+                    print(f"Note: The program might not work if the package {package} is not installed.")
+                    input("Press 'Enter' to continue...")
+                    return False # Package not installed.    
     
     def analysis(data):
         '''
@@ -117,7 +127,7 @@ def main():
         sorted_data = sorted(valid_data)
         
         if len(valid_data) == 0:
-            print("\nError: Can't operate on empty sequence.")
+            print("\nERROR: Can't operate on empty sequence.")
             print("     - valid_data(list) is empty.")
             
         try:
@@ -134,7 +144,7 @@ def main():
             print(f"Invalid data include: {invalid_data}")
             
         except Exception as e:
-            print(f"\nError: {e}")
+            print(f"\nERROR: {e}")
         
         finally:
             return
@@ -162,7 +172,7 @@ def main():
                 data = [item.strip() for item in temp_data]         # list comprehension to strip each element.
                 
             if len(data) == 1 and data[0] == '':
-                print("\nError: Data can't be empty.")
+                print("\nERROR: Data can't be empty.")
             else:
                 break
 
@@ -188,7 +198,7 @@ def main():
             
             if data_in.lower().strip() == "done":
                 if len(data) < 1:
-                    print("\nError: Data can't be empty.")
+                    print("\nERROR: Data can't be empty.")
                 else:
                     break
                 
@@ -220,13 +230,13 @@ def main():
                             print(f"\nWarning: Skipping non-numeric line: '{line.strip()}'")
             
             except FileNotFoundError:
-                print("\nError: File not found.")
+                print("\nERROR: File not found.")
             except PermissionError:
-                print("Error: Access denied.")
+                print("ERROR: Access denied.")
             except OSError as e:
-                print(f"Error: An operating system error occurred while operating '{namepath}': {e}")
+                print(f"ERROR: An operating system error occurred while operating '{namepath}': {e}")
             except UnicodeDecodeError:
-                print(f"Error: Unable to decode correctly. Provided file might not encoded in utf8.")
+                print(f"ERROR: Unable to decode correctly. Provided file might not encoded in utf8.")
                 
             finally:
                 analysis(data_list)
@@ -263,10 +273,10 @@ def main():
                     OpenFile(namepath)
                     break
                 else:
-                    print("\nError: Not a .txt extension. Try again.")
+                    print("\nERROR: Not a .txt extension. Try again.")
             
             if not namepath.endswith(".txt"):
-                print("\nError: Not a .txt extension. Try again.")
+                print("\nERROR: Not a .txt extension. Try again.")
             else:
                 OpenFile(namepath)
                 break
@@ -279,7 +289,7 @@ def main():
         rdgen.main()
         return
     
-    def main_menu():
+    def main_menu(requirements):
         '''
         User main menu to choose input mode.
         '''
@@ -290,6 +300,8 @@ def main():
         "4" : RandomGen
         }
         
+        requirements_list = list(requirements.items())
+        
         while True:
             print("--- Basic Data Analysis ---")
             print("Calculate the mean, median, and mode.\n")
@@ -297,41 +309,64 @@ def main():
             print("1. Whole list.")
             print("2. One at a time.")
             print("3. Read from file.")
-            print("4. Randomly generate data (extra)")
+            print(f"4. Randomly generate data (extra){"":<5}" + f"Status: {"Available" if requirements["random_data"] else "Unavailable"}")
             print("Type 'Exit' to exit.")
+            print(f"\nNOTICE: Option 4 is unavailable due to its module [{requirements_list[2][0]}] is missing.") if not requirements["random_data"] else print("")
             
-            mode = input("\nEnter here(menu): ")
+            mode = input("Enter here(menu): ")
             
             if mode.lower().strip() == "exit":
                 print("\nExiting...")
                 return
             
-            if mode in input_mode:
-                input_mode[mode]()
+            if not requirements["random_data"] and mode == "4":
+                print("\nERROR: Module does not exit.")
+                print("\nNOTICE: Make sure [random_data.py] is in the same directory then reload the program.")
+                input("\nPress 'Enter' to continue...\n")
             else:
-                print("\nError: Invalid menu option. Please enter 1 to 4 or 'Exit'.\n")
+                if mode in input_mode:
+                    input_mode[mode]()
+                else:
+                    print("\nERROR: Invalid menu option. Please enter 1 to 4 or 'Exit'.\n")
         
-    '''
-    Initialization phrase of the program to install necessary dependencies.
-    '''
-    print("--- Initialization... ---")
-    requirements = ["statistics", "random"]
-    all_installed = True
-    for req in requirements:
-        if not install_and_import(req):
-            all_installed = False
+    def Initialization():
+        '''
+        Initialization phrase of the program to install necessary dependencies.
+        '''
+        print("--- Initialization... ---")
         
-    if all_installed:
-        import statistics as st
-        print("\nAll requirements is met. Running the program...\n")
-        main_menu()
-    else:
-        confirmation = input("\nNot all requirements is met. Run the program anyway? (y/N): ")
-        if confirmation.strip().lower() == "y":
-            print("\nNoted that the program might crash.\n")
-            main_menu()
-        elif confirmation.strip().lower() == "n" or confirmation.strip().lower() == "":
-            print("\nAborted...\n")
+        requirements = {
+        "statistics" : False,
+        "random" : False,
+        "random_data" : False
+        }
+        
+        all_installed = True
+        for req in requirements:
+            if install_and_import(req):
+                requirements[req] = True
+            else:
+                all_installed = False
+            
+        if all_installed:
+            import statistics as st
+            import random_data as rdgen
+            print("\n")
+            for module in requirements:
+                print(f"Module {module:<15} Status: {"OK" if requirements[module] else "Missing"}")
+            print("\nAll requirements is met. Running the program...\n")
+            main_menu(requirements)
+        else:
+            print("")
+            for module in requirements:
+                print(f"Module {module:<15} Status: {"OK" if requirements[module] else "Missing"}")
+            confirmation = input("\nNot all requirements is met. Run the program anyway? (y/N): ")
+            if confirmation.strip().lower() == "y":
+                print("\nWARNING: Noted that the program might crash.\n")
+                main_menu(requirements)
+            elif confirmation.strip().lower() == "n" or confirmation.strip().lower() == "":
+                print("\nAborted...\n")
                 
+    Initialization()
 if __name__ == "__main__":
     main()
