@@ -2,6 +2,9 @@
  Basic Data Analysis Script to calculate mean, median, and mode.
 
 ## Update
+- (8 May 2025 9:27PM) Add more error handling and mroe useful text.
+	- Error `random_data.py` does not exist.
+	- Module status in `Initialization`.
 - (3 May 2025 9:42PM) Successfully implemented both file support and random data generation.
 - (3 May 2025) Currently working on random data generation.
 - (3 May 2025) Working on file support
@@ -74,13 +77,17 @@ This script performs basic data analysis on a given list of numbers, calculating
 - Allows the user to specify how many numbers to generate and the range.
 - Generates random floats and sends them to `analysis(data)`.
 
-### `main_menu()`
+### `main_menu(requirements)`
 - Displays the main menu.
 - Allows users to choose between input modes or exit.
 
-### `main()`
+### `Initialization()`
 - Ensures dependencies are installed.
-- Initiates the main menu.
+- Display dependencies status.
+- Calls `main_menu(requirements)` with `requirements`.
+
+### `main()`
+- Trigger `Initialization`
 
 ## Usage
 Run the script using:
@@ -104,4 +111,4 @@ Follow the prompts to enter data and perform calculations.
 - SlightlyOffset
 
 ## Version
-- 1.1 (3 May 2025)
+- 1.2 (8 May 2025)
