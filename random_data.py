@@ -85,30 +85,26 @@ def main():
 
     print("\n--- Random number generator (extra) ---")
 
-    confirm = input("\nContinue?(Y/n): ").strip().lower()
+    print("\nRDGen menu:")
+    print("1. Generate whole numbers.")
+    print("2. Generate floating-point numbers.")
+    print("\nNote: Every new generated data will overwirte the existing data.")
+
+    mode_map = {
+    "1" : "int",
+    "2" : "float"
+    }
     
-    if confirm == "n":
-        return
-    elif confirm == "" or confirm == "y":
-        print("\nRDGen menu:")
-        print("1. Generate whole numbers.")
-        print("2. Generate floating-point numbers.")
-        print("\nNote: Every new generated data will overwirte the existing data.")
-
-        mode_map = {
-        "1" : "int",
-        "2" : "float"
-        }
-
-        mode = input("Enter mode(number): ").strip().lower()
-        
-        if mode == "stop":
-            print("\nStopping...")
-        
-        if mode in mode_map:
-            DataGen(mode_map[mode])
-        else:
-            print("\nError: Selected mode does not exist. Try again.")
+    print("\nType 'stop' to stop and return.")
+    mode = input("Enter mode(number): ").strip().lower()
+    
+    if mode == "stop":
+        print("\nStopping...")
+    
+    if mode in mode_map:
+        DataGen(mode_map[mode])
+    else:
+        print("\nError: Selected mode does not exist. Try again.")
             
 if __name__ == "__main__":
     main()
