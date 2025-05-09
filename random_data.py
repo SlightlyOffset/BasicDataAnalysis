@@ -19,13 +19,13 @@ def main():
                 for item in data_list:
                     file.write(str(item) + "\n")
             print(f"\n>> Saved to {filename}")
-            print("Note: File will be save within the same directory as the script.")
+            print("NOTICE: File will be save within the same directory as the script.")
         except FileNotFoundError:
-            print(f"Error: The file '{filename}' was not found.  Check the path.")
+            print(f"ERROR: The file '{filename}' was not found.  Check the path.")
         except PermissionError:
-            print(f"Error: You do not have permission to write to '{filename}'.")
+            print(f"ERROR: You do not have permission to write to '{filename}'.")
         except OSError as e:
-            print(f"Error: An operating system error occurred while writing to '{filename}': {e}")
+            print(f"ERROR: An operating system error occurred while writing to '{filename}': {e}")
         except Exception as e:
             print(f"An unexpected error occurred while writing to '{filename}': {e}")
         else: # Added else to only print on success
@@ -57,7 +57,7 @@ def main():
                     data = int(data_in)
                     return data
                 except ValueError:
-                    print("\nError: Input is not 'int' or cannot be converted to. Try again.")
+                    print("\nERROR: Input is not 'int' or cannot be converted to. Try again.")
             
         match mode:
             case "int":     # mode 1
@@ -104,7 +104,7 @@ def main():
     if mode in mode_map:
         DataGen(mode_map[mode])
     else:
-        print("\nError: Selected mode does not exist. Try again.")
+        print("\nERROR: Selected mode does not exist. Try again.\n")
             
 if __name__ == "__main__":
     main()
